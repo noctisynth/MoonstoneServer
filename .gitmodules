@@ -1,0 +1,3 @@
+[submodule "oblivion"]
+	path = oblivion
+	url = https://github.com/noctisynth/oblivion-rust.git
