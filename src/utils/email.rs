@@ -1,6 +1,7 @@
 use lazy_static::lazy_static;
 use regex::Regex;
-pub struct EmailValidatorCacher {
+
+pub(crate) struct EmailValidatorCacher {
     regex: &'static Regex,
 }
 
@@ -22,7 +23,7 @@ impl EmailValidatorCacher {
 }
 
 lazy_static! {
-    pub static ref EMAIL_VALIDATOR: EmailValidatorCacher = EmailValidatorCacher::new();
+    pub(crate) static ref EMAIL_VALIDATOR: EmailValidatorCacher = EmailValidatorCacher::new();
 }
 
 #[cfg(test)]

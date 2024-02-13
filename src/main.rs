@@ -10,15 +10,17 @@ pub mod utils {
     pub mod model;
     pub mod password;
     pub mod sequence;
+    pub mod session;
 }
 pub mod handlers {
     pub mod account;
     pub mod message;
-    // pub mod message;
+    pub mod session;
 }
 pub mod models {
     pub mod account;
     pub mod message;
+    pub mod session;
 }
 
 use oblivion::models::router::Router;
@@ -31,10 +33,11 @@ use views::session::{login_handler, session_handler};
 async fn main() {
     let mut router = Router::new();
 
+    path_route!(&mut router, "/account/new" => register_handler);
+    path_route!(&mut router, "/account/info" => account_handler);
+
     path_route!(&mut router, "/session/new" => login_handler);
-    path_route!(&mut router, "/session/renew" => session_handler);
-    path_route!(&mut router, "/account" => account_handler);
-    path_route!(&mut router, "/register" => register_handler);
+    path_route!(&mut router, "/session/alive" => session_handler);
 
     let mut server = Server::new("127.0.0.1", 813, router);
     server.run().await;

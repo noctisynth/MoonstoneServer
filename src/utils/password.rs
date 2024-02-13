@@ -3,18 +3,18 @@ use argon2::{
     Argon2,
 };
 
-use crate::exceptions::MoonstoneException;
+use crate::exceptions::Exception;
 
-pub fn hash_password(password: &str) -> Result<String, MoonstoneException> {
+pub(crate) fn hash_password(password: &str) -> Result<String, Exception> {
     let salt = SaltString::generate(&mut OsRng);
 
     match Argon2::default().hash_password(password.as_bytes(), &salt) {
         Ok(password) => Ok(password.to_string()),
-        Err(error) => Err(MoonstoneException::PasswordHashFailed { error }),
+        Err(error) => Err(Exception::PasswordHashFailed { error }),
     }
 }
 
-pub fn verify_password(password: &str, password_hash: &str) -> bool {
+pub(crate) fn verify_password(password: &str, password_hash: &str) -> bool {
     let parsed_hash = match PasswordHash::new(&password_hash) {
         Ok(password_hash) => password_hash,
         Err(_) => return false,

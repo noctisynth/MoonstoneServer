@@ -2,7 +2,7 @@ use oblivion::{models::render::BaseResponse, utils::parser::OblivionRequest};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-pub fn deserialize<T>(req: &mut OblivionRequest) -> Result<T, BaseResponse>
+pub(crate) fn deserialize<T>(req: &mut OblivionRequest) -> Result<T, BaseResponse>
 where
     T: Serialize + for<'a> Deserialize<'a>,
 {

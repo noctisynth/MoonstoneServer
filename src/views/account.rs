@@ -1,6 +1,6 @@
 use crate::{
     handlers::account::{account, register},
-    models::account::RegisterModel,
+    models::{account::RegisterModel, session::SessionModel},
     settings::DATABASE_URL,
     utils::{email::EMAIL_VALIDATOR, model::deserialize},
 };
@@ -61,14 +61,11 @@ async fn register_handler(mut req: OblivionRequest) -> BaseResponse {
 
 #[async_route]
 async fn account_handler(mut req: OblivionRequest) -> BaseResponse {
-    let post = req.get_post();
-
-    let session_key = match post["session_key"].as_str() {
-        Some(session_key) => session_key,
-        None => {
-            return BaseResponse::JsonResponse(json!({"status": false, "msg": "参数异常!"}), 403);
-        }
-    };
+    let session_key = &match deserialize::<SessionModel>(&mut req) {
+        Ok(model) => model,
+        Err(res) => return res,
+    }
+    .session_key;
 
     let db = Database::connect(DATABASE_URL).await.unwrap();
 

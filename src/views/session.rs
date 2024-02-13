@@ -1,6 +1,6 @@
 use crate::{
-    handlers::account::{login, session},
-    models::account::LoginModel,
+    handlers::session::{login, session},
+    models::session::{LoginModel, SessionModel},
     settings::DATABASE_URL,
     utils::model::deserialize,
 };
@@ -35,11 +35,11 @@ async fn login_handler(mut req: OblivionRequest) -> BaseResponse {
 async fn session_handler(mut req: OblivionRequest) -> BaseResponse {
     let db = Database::connect(DATABASE_URL).await.unwrap();
 
-    let post = req.get_post();
-    let session_key = match post["session_key"].as_str() {
-        Some(session_key) => session_key,
-        None => return BaseResponse::JsonResponse(json!({"status": false}), 403),
-    };
+    let session_key = &match deserialize::<SessionModel>(&mut req) {
+        Ok(model) => model,
+        Err(res) => return res,
+    }
+    .session_key;
 
     let status = session(session_key, &db).await;
     let status_code = if status { 200 } else { 403 };

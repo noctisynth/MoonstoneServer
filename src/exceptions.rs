@@ -2,7 +2,7 @@ use sea_orm::DbErr;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
-pub enum MoonstoneException {
+pub enum Exception {
     #[error("未能在表[{table}]中查找到[{field}]为[{data}]的数据")]
     ColumnNotFound {
         table: String,

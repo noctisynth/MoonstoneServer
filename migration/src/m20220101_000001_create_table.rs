@@ -248,3 +248,19 @@ enum Session {
     ExpireTime,
     CreatedAt,
 }
+
+#[derive(DeriveIden)]
+enum Room {
+    Table,
+    Id,
+    CreatedAt,
+}
+
+#[derive(DeriveIden)]
+enum Message {
+    Table,
+    Id,
+    RoomId,
+    UserId,
+    CreatedAt,
+}
