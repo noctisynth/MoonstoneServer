@@ -3,6 +3,7 @@ pub mod exceptions;
 pub mod settings;
 pub mod views {
     pub mod account;
+    pub mod message;
     pub mod session;
 }
 pub mod utils {

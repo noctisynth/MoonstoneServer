@@ -205,8 +205,22 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
+            .drop_table(Table::drop().table(Permission::Table).to_owned())
+            .await?;
+        manager
             .drop_table(Table::drop().table(Account::Table).to_owned())
-            .await
+            .await?;
+        manager
+            .drop_table(Table::drop().table(Session::Table).to_owned())
+            .await?;
+        manager
+            .drop_table(Table::drop().table(Room::Table).to_owned())
+            .await?;
+        manager
+            .drop_table(Table::drop().table(Message::Table).to_owned())
+            .await?;
+
+        Ok(())
     }
 }
 
