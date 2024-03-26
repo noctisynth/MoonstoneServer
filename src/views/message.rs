@@ -10,6 +10,6 @@ async fn new_message_handler(mut req: OblivionRequest) -> BaseResponse {
 }
 
 #[async_route]
-async fn account_handler(mut req: OblivionRequest) -> BaseResponse {
+async fn account_handler(_req: OblivionRequest) -> BaseResponse {
     todo!()
 }
