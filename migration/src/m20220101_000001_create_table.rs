@@ -172,8 +172,65 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
+        manager
+            .create_table(
+                Table::create()
+                    .table(Community::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(Community::Id)
+                            .integer()
+                            .not_null()
+                            .auto_increment()
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(Community::Name).string().not_null())
+                    .col(
+                        ColumnDef::new(Community::SecurityLevel)
+                            .integer()
+                            .not_null(),
+                    )
+                    .col(ColumnDef::new(Community::Token).string().null())
+                    .col(ColumnDef::new(Community::CrossOrigin).boolean().not_null())
+                    .col(
+                        ColumnDef::new(Community::CreatedAt)
+                            .timestamp()
+                            .extra("DEFAULT (datetime('now','localtime'))")
+                            .not_null(),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .create_table(
+                Table::create()
+                    .table(Message::Table)
+                    .col(
+                        ColumnDef::new(Message::Id)
+                            .integer()
+                            .not_null()
+                            .auto_increment()
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(Message::CommunityId).integer().not_null())
+                    .col(ColumnDef::new(Message::AccountId).integer().not_null())
+                    .col(ColumnDef::new(Message::Content).string().not_null())
+                    .col(
+                        ColumnDef::new(Message::CreatedAt)
+                            .timestamp()
+                            .extra("DEFAULT (datetime('now','localtime'))")
+                            .not_null(),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
         db.execute_unprepared(&created_at("permission")).await?;
         db.execute_unprepared(&created_at("account")).await?;
+        db.execute_unprepared(&created_at("session")).await?;
+        db.execute_unprepared(&created_at("community")).await?;
+        db.execute_unprepared(&created_at("message")).await?;
 
         db.execute_unprepared(
             "INSERT OR IGNORE INTO permission (name, level, description) VALUES ('N5 权限', 0, '第五议会至高权限');",
@@ -214,7 +271,7 @@ impl MigrationTrait for Migration {
             .drop_table(Table::drop().table(Session::Table).to_owned())
             .await?;
         manager
-            .drop_table(Table::drop().table(Room::Table).to_owned())
+            .drop_table(Table::drop().table(Community::Table).to_owned())
             .await?;
         manager
             .drop_table(Table::drop().table(Message::Table).to_owned())
@@ -264,9 +321,13 @@ enum Session {
 }
 
 #[derive(DeriveIden)]
-enum Room {
+enum Community {
     Table,
     Id,
+    Name,
+    SecurityLevel,
+    Token,
+    CrossOrigin,
     CreatedAt,
 }
 
@@ -274,7 +335,8 @@ enum Room {
 enum Message {
     Table,
     Id,
-    RoomId,
-    UserId,
+    CommunityId,
+    AccountId,
+    Content,
     CreatedAt,
 }
