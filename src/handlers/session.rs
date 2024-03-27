@@ -59,8 +59,14 @@ pub(crate) async fn login(
             if Local::now() > expire_time {
                 let session_key = hash_password(unique_id)?;
                 let mut new_session_model: SessionActiveModel = session.into();
-                new_session_model.expire_time =
-                    sea_orm::ActiveValue::Set((Local::now() + Duration::days(31)).to_string());
+                new_session_model.expire_time = sea_orm::ActiveValue::Set(
+                    (Local::now()
+                        + match Duration::try_days(31) {
+                            Some(time) => time,
+                            None => return Err(Exception::TimestampError),
+                        })
+                    .to_string(),
+                );
                 new_session_model.session_key = sea_orm::ActiveValue::Set(session_key.clone());
                 new_session_model.update(db).await.unwrap();
                 session_key
@@ -75,7 +81,12 @@ pub(crate) async fn login(
                 user_id: sea_orm::ActiveValue::Set(user.id),
                 unique_id: sea_orm::ActiveValue::Set(unique_id.to_string()),
                 expire_time: sea_orm::ActiveValue::Set(
-                    (Local::now() + Duration::days(31)).to_string(),
+                    (Local::now()
+                        + match Duration::try_days(31) {
+                            Some(time) => time,
+                            None => return Err(Exception::TimestampError),
+                        })
+                    .to_string(),
                 ),
                 ..Default::default()
             };

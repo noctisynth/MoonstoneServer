@@ -21,4 +21,6 @@ pub enum Exception {
     AuthenticationFailed { sequence: String, password: String },
     #[error("权限标记未传入")]
     MissingPermissionField,
+    #[error("时间戳错误")]
+    TimestampError,
 }
