@@ -1,4 +1,3 @@
-use sea_orm::DbErr;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -9,10 +8,6 @@ pub enum Exception {
         field: String,
         data: String,
     },
-    #[error("数据库错误: {error:?}")]
-    DatabaseError { error: DbErr },
-    #[error("创建项目[{name}]时出现异常: {error:?}")]
-    CreateFieldFailed { name: String, error: DbErr },
     #[error("密码加密时出现异常: {error:?}")]
     PasswordHashFailed { error: argon2::password_hash::Error },
     #[error("包含[{feature}]特征的数据已经存在")]
