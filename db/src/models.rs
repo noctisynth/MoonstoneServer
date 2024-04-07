@@ -71,3 +71,26 @@ pub struct Session {
     pub create_at: Datetime,
     pub update_at: Datetime,
 }
+
+#[derive(Debug, Serialize)]
+pub struct CommunityModel<'a> {
+    pub name: &'a str,
+    pub user_id: &'a str,
+    pub security_level: i32,
+    pub token: Option<&'a str>,
+    pub cross_origin: bool,
+    pub create_at: Datetime,
+    pub update_at: Datetime,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Community {
+    pub id: Thing,
+    pub name: String,
+    pub user_id: String,
+    pub security_level: i32,
+    pub token: Option<String>,
+    pub cross_origin: bool,
+    pub create_at: Datetime,
+    pub update_at: Datetime,
+}
