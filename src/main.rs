@@ -44,10 +44,10 @@ async fn main() -> Result<()> {
     path_route!(router, "/account/new" => register_handler);
     path_route!(router, "/account/profile" => profile_handler);
 
-    path_route!(&mut router, "/session/new" => login_handler);
-    path_route!(&mut router, "/session/alive" => session_handler);
+    path_route!(router, "/session/new" => login_handler);
+    path_route!(router, "/session/alive" => session_handler);
 
-    path_route!(&mut router, "/community/new" => new_community_handler);
+    path_route!(router, "/community/new" => new_community_handler);
 
     let mut server = Server::new("0.0.0.0", 7076, router);
     server.run().await;
