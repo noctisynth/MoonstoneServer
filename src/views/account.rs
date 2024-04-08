@@ -55,5 +55,8 @@ async fn profile_handler(mut req: OblivionRequest) -> Response {
     }
     .session_key;
 
-    Ok(BaseResponse::JsonResponse(profile(session_key).await.unwrap(), 200))
+    Ok(BaseResponse::JsonResponse(
+        profile(session_key).await.unwrap(),
+        200,
+    ))
 }

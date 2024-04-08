@@ -37,5 +37,8 @@ async fn session_handler(mut req: OblivionRequest) -> Response {
     let status = session(session_key).await?;
     let status_code = if status { 200 } else { 403 };
 
-    Ok(BaseResponse::JsonResponse(json!({"status": status}), status_code))
+    Ok(BaseResponse::JsonResponse(
+        json!({"status": status}),
+        status_code,
+    ))
 }

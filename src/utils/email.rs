@@ -9,7 +9,7 @@ impl EmailValidatorCacher {
     pub fn new() -> EmailValidatorCacher {
         lazy_static! {
             static ref EMAIL_REGEX: Regex =
-                Regex::new(r"^[a-zA-Z0-9._%+-]+@(tutanota.com|tuta.com)$")
+                Regex::new(r"^[a-zA-Z0-9._%+-]+@(tutanota.com|tuta.com|tutamail.com|tutanota.de|tuta.io|keemail.me)$")
                     .expect("Invalid regex pattern");
         }
         EmailValidatorCacher {
