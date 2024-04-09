@@ -20,10 +20,7 @@ pub async fn create(
         .bind(("community_id", community_id))
         .bind(("user_id", user_id))
         .await?;
-    let send_to: Vec<String> = res.take(0)?;
-
-    println!("sender_id: {}", user_id);
-    println!("send_to: {:?}", send_to);
+    let undelivered: Vec<String> = res.take(0)?;
 
     let message: Option<Message> = DB
         .create(("message", message_id))
@@ -32,8 +29,7 @@ pub async fn create(
             node,
             user_id,
             text,
-            send_to,
-            delivered: vec![],
+            undelivered,
             create_at: Datetime::default(),
             update_at: Datetime::default(),
         })
@@ -46,7 +42,14 @@ pub async fn get_all_undelivered_by_user_id(node: &str, user_id: &str) -> Result
     DB.use_ns("moonstone").use_db("community").await?;
 
     let mut res = DB
-        .query("SELECT * from message WHERE node = $node AND send_to CONTAINS $user_id AND delivered CONTAINSNOT $user_id")
+        .query("SELECT * FROM message WHERE node = $node AND undelivered CONTAINS $user_id")
+        .query(
+            r#"let $msg = UPDATE message SET undelivered -= $user_id;
+            IF array::len($msg.undelivered) = 0 THEN
+                DELETE $msg.id
+            END
+            "#,
+        )
         .bind(("node", node))
         .bind(("user_id", user_id))
         .await?;

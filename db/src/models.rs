@@ -122,8 +122,7 @@ pub struct MessageModel<'a> {
     pub node: &'a str,
     pub user_id: &'a str,
     pub text: &'a str,
-    pub send_to: Vec<String>,
-    pub delivered: Vec<String>,
+    pub undelivered: Vec<String>,
     pub create_at: Datetime,
     pub update_at: Datetime,
 }
@@ -135,8 +134,7 @@ pub struct Message {
     pub node: String,
     pub user_id: String,
     pub text: String,
-    pub send_to: Vec<String>,
-    pub delivered: Vec<String>,
+    pub undelivered: Vec<String>,
     pub create_at: Datetime,
     pub update_at: Datetime,
 }
