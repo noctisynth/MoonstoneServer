@@ -28,3 +28,11 @@ pub async fn create(
 
     Ok(community.first().unwrap().to_owned())
 }
+
+pub async fn delete_by_id(id: &str) -> Result<Option<Community>> {
+    DB.use_ns("moonstone").use_db("community").await?;
+
+    let member: Option<Community> = DB.delete(("community", id)).await?;
+
+    Ok(member)
+}

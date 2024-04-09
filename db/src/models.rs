@@ -94,3 +94,49 @@ pub struct Community {
     pub create_at: Datetime,
     pub update_at: Datetime,
 }
+
+#[derive(Debug, Serialize)]
+pub struct MemberModel<'a> {
+    pub node: &'a str,
+    pub community_id: &'a str,
+    pub user_id: &'a str,
+    pub permissions: Vec<&'a str>,
+    pub create_at: Datetime,
+    pub update_at: Datetime,
+}
+
+#[derive(Debug, Deserialize, Clone, PartialEq)]
+pub struct Member {
+    pub id: Thing,
+    pub node: String,
+    pub community_id: String,
+    pub user_id: String,
+    pub permissions: Vec<String>,
+    pub create_at: Datetime,
+    pub update_at: Datetime,
+}
+
+#[derive(Debug, Serialize)]
+pub struct MessageModel<'a> {
+    pub community_id: &'a str,
+    pub node: &'a str,
+    pub user_id: &'a str,
+    pub text: &'a str,
+    pub send_to: Vec<String>,
+    pub delivered: Vec<String>,
+    pub create_at: Datetime,
+    pub update_at: Datetime,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Message {
+    pub id: Thing,
+    pub community_id: String,
+    pub node: String,
+    pub user_id: String,
+    pub text: String,
+    pub send_to: Vec<String>,
+    pub delivered: Vec<String>,
+    pub create_at: Datetime,
+    pub update_at: Datetime,
+}
