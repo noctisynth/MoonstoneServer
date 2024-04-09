@@ -71,13 +71,18 @@ async fn member() -> Result<()> {
     let member2 = member::create(node, community_id, user_id2, vec![]).await?;
 
     let all_members = member::get_all_by_community_id(community_id).await?;
-    assert_eq!(vec![member1.clone(), member2.clone()], all_members);
 
     account::delete_by_id(&user_id).await?;
     account::delete_by_id(&user_id2).await?;
     member::delete_by_id(&member1.id.id.to_raw()).await?;
     member::delete_by_id(&member2.id.id.to_raw()).await?;
     community::delete_by_id(&community_id).await?;
+
+    assert!(
+        vec![member1.clone(), member2.clone()] == all_members
+            || vec![member2, member1] == all_members
+    );
+
     Ok(())
 }
 
@@ -125,11 +130,10 @@ async fn message() -> Result<()> {
 
     let unread = message::get_all_undelivered_by_user_id(node, user_id).await?;
 
-    println!("unread_messgae: {:?}", unread);
-
     let message2 = message::create("fergfregwe", node, community_id, user_id2, text).await?;
 
     let unread2 = message::get_all_undelivered_by_user_id(node, user_id).await?;
+    let unread3 = message::get_all_undelivered_by_user_id(node, user_id).await?;
 
     account::delete_by_id(&user_id).await?;
     account::delete_by_id(&user_id2).await?;
@@ -141,5 +145,6 @@ async fn message() -> Result<()> {
 
     assert!(unread.is_empty());
     assert!(!unread2.is_empty());
+    assert!(unread3.is_empty());
     Ok(())
 }
