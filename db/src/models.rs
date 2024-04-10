@@ -54,7 +54,7 @@ pub struct Account {
 }
 
 #[derive(Debug, Serialize)]
-pub struct SessionModel<'a> {
+pub(crate) struct SessionModel<'a> {
     pub token: &'a str,
     pub user_id: &'a str,
     pub device_id: &'a str,
@@ -73,7 +73,7 @@ pub struct Session {
 }
 
 #[derive(Debug, Serialize)]
-pub struct CommunityModel<'a> {
+pub(crate) struct CommunityModel<'a> {
     pub name: &'a str,
     pub user_id: &'a str,
     pub security_level: i32,
@@ -96,7 +96,7 @@ pub struct Community {
 }
 
 #[derive(Debug, Serialize)]
-pub struct MemberModel<'a> {
+pub(crate) struct MemberModel<'a> {
     pub node: &'a str,
     pub community_id: &'a str,
     pub user_id: &'a str,
@@ -117,7 +117,7 @@ pub struct Member {
 }
 
 #[derive(Debug, Serialize)]
-pub struct MessageModel<'a> {
+pub(crate) struct MessageModel<'a> {
     pub community_id: &'a str,
     pub node: &'a str,
     pub user_id: &'a str,
