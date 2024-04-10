@@ -1,3 +1,4 @@
+use anyhow::anyhow;
 use oblivion::models::render::{BaseResponse, Response};
 use oblivion::{oblivion_codegen::async_route, utils::parser::OblivionRequest};
 use serde_json::json;
@@ -83,7 +84,9 @@ async fn new_message_handler(mut req: OblivionRequest) -> Response {
     };
 
     let user = session::get_by_token(&post_data.token).await?;
-    if user.is_none() {}
+    if user.is_none() {
+        return Err(anyhow!("用户不存在！"));
+    }
 
     message::create(
         &post_data.message_id,
@@ -108,19 +111,16 @@ async fn get_message_handler(mut req: OblivionRequest) -> Response {
     };
 
     let user = session::get_by_token(&post_data.token).await?;
-    if user.is_none() {}
+    if user.is_none() {
+        return Err(anyhow!("用户不存在！"));
+    }
 
-    message::create(
-        &post_data.message_id,
-        &post_data.node,
-        &post_data.community_id,
-        &user.unwrap().user_id,
-        &post_data.text,
-    )
-    .await?;
+    let messages =
+        message::get_all_undelivered_by_user_id(&post_data.node, &user.unwrap().id.id.to_raw())
+            .await?;
 
     Ok(BaseResponse::JsonResponse(
-        json!({"status": true, "msg": "success"}),
+        json!({"status": true, "msg": "success", "messages": serde_json::to_value(messages)?}),
         200,
     ))
 }

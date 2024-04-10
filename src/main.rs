@@ -25,7 +25,9 @@ pub mod models {
 }
 
 use crate::views::account::{profile_handler, register_handler};
-use crate::views::community::{join_community_handler, new_community_handler, new_message_handler};
+use crate::views::community::{
+    get_message_handler, join_community_handler, new_community_handler, new_message_handler,
+};
 use crate::views::session::{login_handler, session_handler};
 use anyhow::Result;
 use moonstone_db::init;
@@ -51,7 +53,7 @@ async fn main() -> Result<()> {
 
     path_route!(router, "/message/new" => new_message_handler);
     path_route!(router, "/message/delete" => new_message_handler);
-    path_route!(router, "/message/get" => new_message_handler);
+    path_route!(router, "/message/get" => get_message_handler);
 
     let mut server = Server::new("0.0.0.0", 7076, router);
     server.run().await;
