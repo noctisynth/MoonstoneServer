@@ -128,12 +128,12 @@ async fn message() -> Result<()> {
 
     let message = message::create("fwefwergfrew", node, community_id, user_id, text).await?;
 
-    let unread = message::get_all_undelivered_by_user_id(node, user_id).await?;
+    let unread = message::get_all_undelivered_by_user_id(user_id).await?;
 
     let message2 = message::create("fergfregwe", node, community_id, user_id2, text).await?;
 
-    let unread2 = message::get_all_undelivered_by_user_id(node, user_id).await?;
-    let unread3 = message::get_all_undelivered_by_user_id(node, user_id).await?;
+    let unread2 = message::get_all_undelivered_by_user_id(user_id).await?;
+    let unread3 = message::get_all_undelivered_by_user_id(user_id).await?;
 
     account::delete_by_id(&user_id).await?;
     account::delete_by_id(&user_id2).await?;

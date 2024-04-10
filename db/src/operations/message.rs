@@ -38,11 +38,11 @@ pub async fn create(
     Ok(message.unwrap())
 }
 
-pub async fn get_all_undelivered_by_user_id(node: &str, user_id: &str) -> Result<Vec<Message>> {
+pub async fn get_all_undelivered_by_user_id(user_id: &str) -> Result<Vec<Message>> {
     DB.use_ns("moonstone").use_db("community").await?;
 
     let mut res = DB
-        .query("SELECT * FROM message WHERE node = $node AND undelivered CONTAINS $user_id")
+        .query("SELECT * FROM message WHERE undelivered CONTAINS $user_id")
         .query(
             r#"let $msg = UPDATE message SET undelivered -= $user_id;
             IF array::len($msg.undelivered) = 0 THEN
@@ -50,7 +50,6 @@ pub async fn get_all_undelivered_by_user_id(node: &str, user_id: &str) -> Result
             END
             "#,
         )
-        .bind(("node", node))
         .bind(("user_id", user_id))
         .await?;
 

@@ -5,7 +5,7 @@ use serde_json::json;
 
 use moonstone_db::operations::{member, message, session};
 
-use crate::models::community::{JoinCommunityModel, MessageModel};
+use crate::models::community::{GetAllMessagesModel, JoinCommunityModel, MessageModel};
 use crate::{
     handlers::community::new_community, models::community::NewCommunityModel,
     utils::model::deserialize,
@@ -105,7 +105,7 @@ async fn new_message_handler(mut req: OblivionRequest) -> Response {
 
 #[async_route]
 async fn get_message_handler(mut req: OblivionRequest) -> Response {
-    let post_data = match deserialize::<MessageModel>(&mut req) {
+    let post_data = match deserialize::<GetAllMessagesModel>(&mut req) {
         Ok(model) => model,
         Err(res) => return Ok(res),
     };
@@ -115,9 +115,7 @@ async fn get_message_handler(mut req: OblivionRequest) -> Response {
         return Err(anyhow!("用户不存在！"));
     }
 
-    let messages =
-        message::get_all_undelivered_by_user_id(&post_data.node, &user.unwrap().id.id.to_raw())
-            .await?;
+    let messages = message::get_all_undelivered_by_user_id(&user.unwrap().id.id.to_raw()).await?;
 
     Ok(BaseResponse::JsonResponse(
         json!({"status": true, "msg": "success", "messages": serde_json::to_value(messages)?}),

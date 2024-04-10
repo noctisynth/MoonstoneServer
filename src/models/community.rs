@@ -28,3 +28,8 @@ pub(crate) struct MessageModel {
     pub(crate) message_id: String,
     pub(crate) text: String,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub(crate) struct GetAllMessagesModel {
+    pub(crate) token: String,
+}
