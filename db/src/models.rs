@@ -127,7 +127,7 @@ pub struct MessageModel<'a> {
     pub update_at: Datetime,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Message {
     pub id: Thing,
     pub community_id: String,
