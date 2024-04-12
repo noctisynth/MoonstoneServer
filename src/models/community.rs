@@ -16,7 +16,6 @@ pub(crate) struct JoinCommunityModel {
     pub(crate) node: String,
     pub(crate) user_id: String,
     pub(crate) community_id: String,
-    pub(crate) cross_origin: bool,
 }
 
 
