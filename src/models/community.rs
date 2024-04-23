@@ -9,7 +9,6 @@ pub(crate) struct NewCommunityModel {
     pub(crate) cross_origin: bool,
 }
 
-
 #[derive(Serialize, Deserialize, Debug)]
 pub(crate) struct JoinCommunityModel {
     pub(crate) token: String,
@@ -17,7 +16,6 @@ pub(crate) struct JoinCommunityModel {
     pub(crate) user_id: String,
     pub(crate) community_id: String,
 }
-
 
 #[derive(Serialize, Deserialize, Debug)]
 pub(crate) struct MessageModel {
