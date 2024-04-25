@@ -3,14 +3,14 @@ use crate::{
     models::session::{LoginModel, SessionModel},
     utils::model::deserialize,
 };
-use oblivion::models::render::{BaseResponse, Response};
+use oblivion::models::{render::BaseResponse, session::Session};
 use oblivion::oblivion_codegen::async_route;
-use oblivion::utils::parser::OblivionRequest;
+use oblivion::types::server::Response;
 use serde_json::json;
 
 #[async_route]
-async fn login_handler(mut req: OblivionRequest) -> Response {
-    let post_data = match deserialize::<LoginModel>(&mut req) {
+async fn login_handler(sess: Session) -> Response {
+    let post_data = match deserialize::<LoginModel>(&sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
     };
@@ -27,8 +27,8 @@ async fn login_handler(mut req: OblivionRequest) -> Response {
 }
 
 #[async_route]
-async fn session_handler(mut req: OblivionRequest) -> Response {
-    let session_key = &match deserialize::<SessionModel>(&mut req) {
+async fn session_handler(sess: Session) -> Response {
+    let session_key = &match deserialize::<SessionModel>(&sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
     }

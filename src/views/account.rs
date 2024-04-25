@@ -4,14 +4,14 @@ use crate::{
     utils::{email::EMAIL_VALIDATOR, model::deserialize},
 };
 use moonstone_db::operations::account::filter_by_identity;
-use oblivion::models::render::{BaseResponse, Response};
+use oblivion::models::{render::BaseResponse, session::Session};
+use oblivion::types::server::Response;
 use oblivion::oblivion_codegen::async_route;
-use oblivion::utils::parser::OblivionRequest;
 use serde_json::json;
 
 #[async_route]
-async fn register_handler(mut req: OblivionRequest) -> Response {
-    let post_data = match deserialize::<RegisterModel>(&mut req) {
+async fn register_handler(sess: Session) -> Response {
+    let post_data = match deserialize::<RegisterModel>(&mut sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
     };
@@ -48,8 +48,8 @@ async fn register_handler(mut req: OblivionRequest) -> Response {
 }
 
 #[async_route]
-async fn profile_handler(mut req: OblivionRequest) -> Response {
-    let session_key = &match deserialize::<SessionModel>(&mut req) {
+async fn profile_handler(sess: Session) -> Response {
+    let session_key = &match deserialize::<SessionModel>(&mut sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
     }

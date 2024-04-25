@@ -1,5 +1,7 @@
 use anyhow::anyhow;
-use oblivion::models::render::{BaseResponse, Response};
+use oblivion::models::render::BaseResponse;
+use oblivion::models::session::Session;
+use oblivion::types::server::Response;
 use oblivion::{oblivion_codegen::async_route, utils::parser::OblivionRequest};
 use serde_json::json;
 
@@ -12,8 +14,8 @@ use crate::{
 };
 
 #[async_route]
-async fn new_community_handler(mut req: OblivionRequest) -> Response {
-    let post_data = match deserialize::<NewCommunityModel>(&mut req) {
+async fn new_community_handler(sess: Session) -> Response {
+    let post_data = match deserialize::<NewCommunityModel>(&sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
     };
@@ -21,7 +23,7 @@ async fn new_community_handler(mut req: OblivionRequest) -> Response {
     let user = session::get_by_token(&post_data.session_key).await?;
     if user.is_none() {
         return Ok(BaseResponse::JsonResponse(
-            json!({"status":false,"msg":"账户不存在！"}),
+            json!({"status": false, "msg": "账户不存在！"}),
             403,
         ));
     }
@@ -47,8 +49,8 @@ async fn delete_community_handler(mut _req: OblivionRequest) -> Response {
 }
 
 #[async_route]
-async fn join_community_handler(mut req: OblivionRequest) -> Response {
-    let post_data = match deserialize::<JoinCommunityModel>(&mut req) {
+async fn join_community_handler(sess: Session) -> Response {
+    let post_data = match deserialize::<JoinCommunityModel>(&sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
     };
@@ -77,8 +79,8 @@ async fn join_community_handler(mut req: OblivionRequest) -> Response {
 }
 
 #[async_route]
-async fn new_message_handler(mut req: OblivionRequest) -> Response {
-    let post_data = match deserialize::<MessageModel>(&mut req) {
+async fn new_message_handler(sess: Session) -> Response {
+    let post_data = match deserialize::<MessageModel>(&sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
     };
@@ -104,8 +106,8 @@ async fn new_message_handler(mut req: OblivionRequest) -> Response {
 }
 
 #[async_route]
-async fn get_message_handler(mut req: OblivionRequest) -> Response {
-    let post_data = match deserialize::<GetAllMessagesModel>(&mut req) {
+async fn get_message_handler(sess: Session) -> Response {
+    let post_data = match deserialize::<GetAllMessagesModel>(&sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
     };
