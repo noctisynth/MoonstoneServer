@@ -18,12 +18,12 @@ use crate::views::channel::channel;
 use crate::views::session::{login_handler, session_handler};
 use anyhow::Result;
 use moonstone_db::init;
+use moonstone_sfu::connection::Pool;
 use oblivion::models::router::Router;
 use oblivion::models::server::Server;
 use oblivion::path_route;
 use once_cell::sync::Lazy;
 use tokio::sync::Mutex;
-use utils::connection::Pool;
 
 pub(crate) static POOL: Lazy<Arc<Mutex<Pool>>> =
     Lazy::new(|| Arc::new(Mutex::new(Pool::default())));

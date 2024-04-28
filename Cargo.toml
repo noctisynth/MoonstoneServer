@@ -1,6 +1,10 @@
 [package]
 name = "moonstone-server"
-version = "0.1.0"
+version = "0.3.0-alpha.1"
+description = "基于 Oblivion 通讯协议的端到端加密链路即时通讯服务端"
+authors = ["苏向夜 <fu050409@163.com>"]
+license = "AGPLv3"
+repository = "https://github.com/noctisynth/MoonstoneServer"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -8,6 +12,7 @@ edition = "2021"
 [dependencies]
 oblivion = { path = "../oblivion" }
 moonstone_db = { path = "./db" }
+moonstone_sfu = { path = "./sfu" }
 
 tokio = { version = "1", features = ["full"] }
 futures = "0.3"
