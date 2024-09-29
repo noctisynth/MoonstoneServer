@@ -1,9 +1,7 @@
-use anyhow::anyhow;
-use oblivion::models::render::BaseResponse;
+use anyhow::{anyhow, Result};
 use oblivion::models::session::Session;
-use oblivion::types::server::Response;
 use oblivion::{oblivion_codegen::async_route, utils::parser::OblivionRequest};
-use serde_json::json;
+use serde_json::{json, Value};
 
 use moonstone_db::operations::{member, message, session};
 
@@ -14,7 +12,7 @@ use crate::{
 };
 
 #[async_route]
-async fn new_community_handler(sess: Session) -> Response {
+async fn new_community_handler(sess: Session) -> Result<Value> {
     let post_data = match deserialize::<NewCommunityModel>(&sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
@@ -22,10 +20,7 @@ async fn new_community_handler(sess: Session) -> Response {
 
     let user = session::get_by_token(&post_data.session_key).await?;
     if user.is_none() {
-        return Ok(BaseResponse::JsonResponse(
-            json!({"status": false, "msg": "账户不存在！"}),
-            403,
-        ));
+        return Ok(json!({"status": false, "msg": "账户不存在！"}));
     }
 
     let new_community_model = new_community(
@@ -37,20 +32,19 @@ async fn new_community_handler(sess: Session) -> Response {
     )
     .await?;
 
-    Ok(BaseResponse::JsonResponse(
+    Ok(
         json!({"status": true, "msg": "社群创建成功！", "community_id": new_community_model.id.id.to_raw()}),
-        200,
-    ))
+    )
 }
 
 #[async_route]
-async fn delete_community_handler(mut _req: OblivionRequest) -> Response {
+async fn delete_community_handler(mut _req: OblivionRequest) -> Result<Value> {
     todo!()
 }
 
 #[async_route]
-async fn join_community_handler(sess: Session) -> Response {
-    let post_data = match deserialize::<JoinCommunityModel>(&sess.recv().await?) {
+async fn join_community_handler(session: Session) -> Result<Value> {
+    let post_data = match deserialize::<JoinCommunityModel>(&session.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
     };
@@ -64,22 +58,14 @@ async fn join_community_handler(sess: Session) -> Response {
     .await
     {
         Ok(_) => {}
-        Err(e) => {
-            return Ok(BaseResponse::JsonResponse(
-                json!({"status": false, "msg": e.to_string()}),
-                502,
-            ))
-        }
+        Err(e) => return Ok(json!({"status":false,"msg":e.to_string()})),
     }
 
-    Ok(BaseResponse::JsonResponse(
-        json!({"status": true, "msg": "成功加入社群！"}),
-        200,
-    ))
+    Ok(json!({"status": true, "msg": "成功加入社群！"}))
 }
 
 #[async_route]
-async fn new_message_handler(sess: Session) -> Response {
+async fn new_message_handler(sess: Session) -> Result<Value> {
     let post_data = match deserialize::<MessageModel>(&sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
@@ -99,14 +85,11 @@ async fn new_message_handler(sess: Session) -> Response {
     )
     .await?;
 
-    Ok(BaseResponse::JsonResponse(
-        json!({"status": true, "msg": "success"}),
-        200,
-    ))
+    Ok(json!({"status": true, "msg": "success"}))
 }
 
 #[async_route]
-async fn get_message_handler(sess: Session) -> Response {
+async fn get_message_handler(sess: Session) -> Result<Value> {
     let post_data = match deserialize::<GetAllMessagesModel>(&sess.recv().await?) {
         Ok(model) => model,
         Err(res) => return Ok(res),
@@ -119,8 +102,5 @@ async fn get_message_handler(sess: Session) -> Response {
 
     let messages = message::get_all_undelivered_by_user_id(&user.unwrap().id.id.to_raw()).await?;
 
-    Ok(BaseResponse::JsonResponse(
-        json!({"status": true, "msg": "success", "messages": serde_json::to_value(messages)?}),
-        200,
-    ))
+    Ok(json!({"status": true, "msg": "success", "messages": serde_json::to_value(messages)?}))
 }
