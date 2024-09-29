@@ -1,15 +1,6 @@
 use serde::{Deserialize, Serialize};
 use surrealdb::sql::{Datetime, Thing};
 
-#[derive(Debug, Serialize)]
-pub(crate) struct AccessibilityModel<'a> {
-    pub name: &'a str,
-    pub level: i32,
-    pub desc: &'a str,
-    pub create_at: Datetime,
-    pub update_at: Datetime,
-}
-
 // #[derive(Debug, Deserialize)]
 // pub(crate) struct Accessibility {
 //     pub id: Thing,
